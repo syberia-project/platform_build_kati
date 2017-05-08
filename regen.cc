@@ -209,12 +209,15 @@ class StampChecker {
           printf("env %s: dirty (%s => %.*s)\n", s.c_str(), s2.c_str(),
                  SPF(val));
         } else {
-          fprintf(stderr,
-                  "Environment variable %s was modified (%s => %.*s), "
-                  "regenerating...\n",
-                  s.c_str(), s2.c_str(), SPF(val));
+          fprintf(stderr, "Environment variable %s was modified (%s => %.*s), ",
+                 s.c_str(), s2.c_str(), SPF(val));
         }
-        RETURN_TRUE;
+        if (s == "TMPDIR") {
+          fprintf(stderr, "ignoring changed TMPDIR\n");
+        } else {
+          fprintf(stderr, "regenerating...\n");
+          RETURN_TRUE;
+        }
       } else if (g_flags.dump_kati_stamp) {
         printf("env %s: clean (%.*s)\n", s.c_str(), SPF(val));
       }
